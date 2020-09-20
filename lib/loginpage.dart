@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget{
@@ -9,6 +10,8 @@ class _LoginPageState extends State<LoginPage>{
   Widget build(BuildContext context) {
     String _email;
     String _password;
+    final emailController = new TextEditingController();
+    final password = new TextEditingController();
     // TODO: implement build
     return new Scaffold(
       body: Center(
@@ -18,21 +21,14 @@ class _LoginPageState extends State<LoginPage>{
             mainAxisAlignment: MainAxisAlignment.center,
             children:<Widget> [
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(hintText: 'Email'),
-                onChanged: (value){
-                  setState(() {
-                    _email = value;
-                  });
-                },
               ),
               SizedBox(height: 15.0,),
               TextField(
+                controller: password,
                 decoration: InputDecoration(hintText: 'Password'),
-                onChanged: (value){
-                  setState(() {
-                    _password = value;
-                  });
-                },
+                obscureText: true,
               ),
               SizedBox(height: 20.0,),
               RaisedButton(
@@ -40,7 +36,11 @@ class _LoginPageState extends State<LoginPage>{
                 color: Colors.blue,
                 textColor: Colors.white,
                 elevation: 7.0,
-                onPressed: (){},
+                onPressed: (){
+                  FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: password.text).then((AuthResult auth) { 
+                    Navigator.of(context).pushReplacementNamed('/home');
+                    }).catchError((e){print(e);});
+                },
               ),
               SizedBox(height: 15.0,),
               Text('Don\'t have been account?'),
@@ -50,7 +50,9 @@ class _LoginPageState extends State<LoginPage>{
                 color: Colors.blue,
                 textColor: Colors.white,
                 elevation: 7.0,
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.of(context).pushNamed('/signup');
+                },
               )
             ],
           ),
